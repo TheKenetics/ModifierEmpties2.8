@@ -3,9 +3,9 @@ bl_info = {
 	"author": "Kenetics",
 	"version": (0, 2),
 	"blender": (2, 80, 0),
-	"location": "View3D > Search",
+	"location": "View 3D > Add Menu > Modifier Empties",
 	"description": "Adds modifiers to selected objects and creates empties to control the modifiers.",
-	"warning": "",
+	"warning": "Modifier Empties can only be added in Object mode",
 	"wiki_url": "",
 	"category": "Object"
 }
