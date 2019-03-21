@@ -90,7 +90,7 @@ class ME_OT_AddRadialArrayEmptyOperator(bpy.types.Operator):
 		use_cursor_loc = self.use_cursor_loc
 		
 		# Copy loc, rot, and scale so source doesn't get changed
-		empty_location = context.scene.cursor_location.copy() if use_cursor_loc else active_obj.location.copy()
+		empty_location = context.scene.cursor.location.copy() if use_cursor_loc else active_obj.location.copy()
 		empty_location += self.location_modify
 		
 		empty_rotation = active_obj.rotation_euler.copy()
@@ -171,7 +171,7 @@ class ME_OT_AddArrayEmptyOperator(bpy.types.Operator):
 		use_cursor_loc = self.use_cursor_loc
 		
 		# Copy active_obj's attributes or they will be modified too
-		empty_location = context.scene.cursor_location.copy() if use_cursor_loc else active_obj.location.copy()
+		empty_location = context.scene.cursor.location.copy() if use_cursor_loc else active_obj.location.copy()
 		empty_location += self.location_modify
 		
 		empty_rotation = active_obj.rotation_euler.copy()
@@ -252,7 +252,7 @@ class ME_OT_AddMirrorEmptyOperator(bpy.types.Operator):
 		use_cursor_loc = self.use_cursor_loc
 		
 		# Copy active_obj's attributes or they will be modified too
-		empty_location = context.scene.cursor_location.copy() if use_cursor_loc else active_obj.location.copy()
+		empty_location = context.scene.cursor.location.copy() if use_cursor_loc else active_obj.location.copy()
 		empty_location += self.location_modify
 		
 		empty_rotation = active_obj.rotation_euler.copy()
@@ -381,7 +381,7 @@ class ME_OT_AddCastEmptyOperator(bpy.types.Operator):
 		
 		# Setup empty
 		# Copy active_obj's attributes or they will be modified too
-		empty_location = context.scene.cursor_location.copy() if use_cursor_loc else active_obj.location.copy()
+		empty_location = context.scene.cursor.location.copy() if use_cursor_loc else active_obj.location.copy()
 		empty_location += self.location_modify
 		
 		empty_rotation = active_obj.rotation_euler.copy()
@@ -496,7 +496,7 @@ class ME_OT_AddSimpleDeformEmptyOperator(bpy.types.Operator):
 		
 		# Setup empty
 		# Copy active_obj's attributes or they will be modified too
-		empty_location = context.scene.cursor_location.copy() if use_cursor_loc else active_obj.location.copy()
+		empty_location = context.scene.cursor.location.copy() if use_cursor_loc else active_obj.location.copy()
 		empty_location += self.location_modify
 		
 		empty_rotation = active_obj.rotation_euler.copy()
@@ -572,7 +572,7 @@ class ME_OT_AddBentArrayEmptyOperator(bpy.types.Operator):
 		relative_offset_displace = (0.0, 0.0, 0.0)
 		
 		# Copy loc, rot, and scale so source doesn't get changed
-		empty_location = context.scene.cursor_location.copy() if use_cursor_loc else active_obj.location.copy()
+		empty_location = context.scene.cursor.location.copy() if use_cursor_loc else active_obj.location.copy()
 		empty_location += self.location_modify
 		
 		empty_rotation = active_obj.rotation_euler.copy()
