@@ -38,3 +38,7 @@ You can add a modifier empty from...
 * 3D View > Operator Search > Add \*Modifier empty name\*  
 ## Notes
 You must be in Object mode to add modifier empties.
+
+## Changelog  
+### 0.2  
+Update addon to the new 3D cursor (doesn't support 3D cursor rotation)
