@@ -1,7 +1,7 @@
 bl_info = {
 	"name": "Modifier Empties",
 	"author": "Kenetics",
-	"version": (0, 1),
+	"version": (0, 2),
 	"blender": (2, 80, 0),
 	"location": "View3D > Search",
 	"description": "Adds modifiers to selected objects and creates empties to control the modifiers.",
