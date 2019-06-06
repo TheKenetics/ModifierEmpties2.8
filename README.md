@@ -42,3 +42,9 @@ You must be in Object mode to add modifier empties.
 ## Changelog  
 ### 0.2  
 Update addon to the new 3D cursor (doesn't support 3D cursor rotation)
+
+### 0.3
+Fix scene.update() error in Radial Array.  
+Deselect all objects and make modifier empty active after adding a modifier empty. Thanks to Blender Artists user uruburei
+ for pointing this out.  
+Add Mini Manual.  
