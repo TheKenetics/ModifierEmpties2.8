@@ -1,7 +1,7 @@
 bl_info = {
 	"name": "Modifier Empties",
 	"author": "Kenetics",
-	"version": (0, 2),
+	"version": (0, 3),
 	"blender": (2, 80, 0),
 	"location": "View 3D > Add Menu > Modifier Empties",
 	"description": "Adds modifiers to selected objects and creates empties to control the modifiers.",
@@ -108,15 +108,19 @@ class ME_OT_AddRadialArrayEmptyOperator(bpy.types.Operator):
 		
 		empty = createEmpty(context, empty_name, empty_location, empty_rotation, empty_scale, parent)
 		
-		#bpy.context.scene.update()
-		context.scene.update()
-		
 		for obj in context.selected_objects:
 			array_mod = obj.modifiers.new("EmptyOffsetArray", "ARRAY")
 			array_mod.offset_object = empty
 			array_mod.use_object_offset = True
 			array_mod.use_relative_offset = False
 			array_mod.count = array_count
+			
+			# Deselect selected object
+			obj.select_set(False)
+		
+		# Select modifier empty and set as active object
+		empty.select_set(True)
+		context.view_layer.objects.active = empty
 		
 		return {'FINISHED'}
 
@@ -189,6 +193,13 @@ class ME_OT_AddArrayEmptyOperator(bpy.types.Operator):
 			array_mod.use_object_offset = True
 			array_mod.use_relative_offset = False
 			array_mod.count = array_count
+			
+			# Deselect selected object
+			obj.select_set(False)
+			
+		# Select modifier empty and set as active object
+		empty.select_set(True)
+		context.view_layer.objects.active = empty
 		
 		return {'FINISHED'}
 
@@ -272,6 +283,13 @@ class ME_OT_AddMirrorEmptyOperator(bpy.types.Operator):
 			mirror_mod.use_axis[1] = self.use_y
 			mirror_mod.use_axis[2] = self.use_z
 			mirror_mod.use_clip = self.clipping
+			
+			# Deselect selected object
+			obj.select_set(False)
+		
+		# Select modifier empty and set as active object
+		empty.select_set(True)
+		context.view_layer.objects.active = empty
 		
 		return {'FINISHED'}
 	
@@ -408,6 +426,13 @@ class ME_OT_AddCastEmptyOperator(bpy.types.Operator):
 			cast_mod.size = self.size
 			cast_mod.use_radius_as_size = self.use_radius_as_size
 			cast_mod.use_transform = self.use_transform
+			
+			# Deselect selected object
+			obj.select_set(False)
+		
+		# Select modifier empty and set as active object
+		empty.select_set(True)
+		context.view_layer.objects.active = empty
 		
 		return {'FINISHED'}
 		
@@ -519,6 +544,13 @@ class ME_OT_AddSimpleDeformEmptyOperator(bpy.types.Operator):
 			deform_mod.deform_method = self.deform_method
 			deform_mod.limits = self.limits
 			deform_mod.angle = self.angle
+			
+			# Deselect selected object
+			obj.select_set(False)
+		
+		# Select modifier empty and set as active object
+		empty.select_set(True)
+		context.view_layer.objects.active = empty
 		
 		return {'FINISHED'}
 		
@@ -604,6 +636,13 @@ class ME_OT_AddBentArrayEmptyOperator(bpy.types.Operator):
 			deform_mod.origin = empty
 			deform_mod.deform_method = 'BEND'
 			deform_mod.angle = 2*pi
+			
+			# Deselect selected object
+			obj.select_set(False)
+		
+		# Select modifier empty and set as active object
+		empty.select_set(True)
+		context.view_layer.objects.active = empty
 		
 		return {'FINISHED'}	
 
@@ -655,6 +694,14 @@ class ME_OT_AddQuickHookEmptyOperator(bpy.types.Operator):
 			hook_mod.vertex_group = vg.name
 			# add QuickHook object to modifier
 			hook_mod.object = quick_hook_empty
+			
+				# Deselect selected object
+			obj.select_set(False)
+		
+		# Select modifier empty and set as active object
+		quick_hook_empty.select_set(True)
+		context.view_layer.objects.active = quick_hook_empty
+		
 		return {'FINISHED'}
 
 
@@ -676,7 +723,36 @@ class ME_MT_AddModifierEmptyMenu(bpy.types.Menu):
 
 def add_modifier_empty_menu(self, context):
 	self.layout.menu(ME_MT_AddModifierEmptyMenu.bl_idname, icon="MODIFIER")
+
+# Preferences
+class ME_AddonPreferences(bpy.types.AddonPreferences):
+	bl_idname = __name__
 	
+	# Properties
+	show_mini_manual : bpy.props.BoolProperty(
+		name="Show Mini Manual",
+		default=False
+	)
+
+	def draw(self, context):
+		layout = self.layout
+		
+		col = layout.column()
+		col.prop(self, "show_mini_manual", toggle=True)
+		
+		if self.show_mini_manual:
+			row = col.row(align=True)
+			row.label(text="Using:")
+			
+			row = col.row(align=True)
+			row.label(text="You can add a modifier empty from...")
+			
+			row = col.row(align=True)
+			row.label(text="3D View > Add Menu > Modifier Empties",icon="DOT")
+			
+			row = col.row(align=True)
+			row.label(text="3D View > Operator Search > Add 'Modifier empty name'",icon="DOT")
+		
 
 classes = ( 
 	ME_OT_AddRadialArrayEmptyOperator,
@@ -686,7 +762,8 @@ classes = (
 	ME_OT_AddSimpleDeformEmptyOperator,
 	ME_OT_AddBentArrayEmptyOperator,
 	ME_OT_AddQuickHookEmptyOperator,
-	ME_MT_AddModifierEmptyMenu
+	ME_MT_AddModifierEmptyMenu,
+	ME_AddonPreferences
 )
 
 def register():
