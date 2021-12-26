@@ -28,6 +28,14 @@ def createEmpty(context, name, location, rotation, scale, parent=None):
 	context.collection.objects.link(empty)
 	return empty
 
+def create_modifier_list_enum(self, context):
+	enum_list = []
+	
+	for modifier in context.active_object.modifiers:
+		enum_list.append( (modifier.name, modifier.name, "") )
+	
+	return enum_list
+
 
 class ME_OT_AddRadialArrayEmptyOperator(bpy.types.Operator):
 	"""Adds an empty controlled radial array to all selected objects."""
@@ -705,6 +713,72 @@ class ME_OT_AddQuickHookEmptyOperator(bpy.types.Operator):
 		return {'FINISHED'}
 
 
+class ME_OT_UpdateRadialArray(bpy.types.Operator):
+	"""Updates radial array modifier."""
+	bl_idname = "object.me_ot_update_radial_array"
+	bl_label = "Update Radial Array Modifier"
+	bl_options = {'REGISTER','UNDO'}
+	
+	# Properties
+	rotation_mode : EnumProperty(
+		items=[
+			("AUTO", "Auto", ""),
+			("MANUAL", "Manual", "")
+		],
+		name="Rotation Mode"
+	)
+	auto_rotation_axis : EnumProperty(
+		items=[
+			("0", "X", ""),
+			("1", "Y", ""),
+			("2", "Z", "")
+		],
+		name="Rotation Axis",
+		default="2"
+	)
+	modifier_name : EnumProperty(items=create_modifier_list_enum, name="Modifier")
+	count : IntProperty(name="Array Count", min=1)
+	location_offset : FloatVectorProperty(name="Location", unit = "LENGTH")
+	rotation : FloatVectorProperty(name="Rotation", subtype = "EULER", unit = "ROTATION")
+	scale_offset : FloatVectorProperty(name="Scale")
+	old_mod = ""
+	cur_mod = ""
+	
+	def draw(self, context):
+		layout = self.layout
+		layout.prop(self, "modifier_name")
+		layout.prop(self, "count")
+		layout.prop(self, "rotation_mode")
+		layout.prop(self, "location_offset")
+		if self.rotation_mode == "AUTO":
+			layout.prop(self, "auto_rotation_axis")
+		else:
+			layout.prop(self, "rotation")
+		layout.prop(self, "scale_offset")
+		
+	@classmethod
+	def poll(cls, context):
+		return context.active_object and context.active_object.modifiers and context.mode == 'OBJECT'
+
+	def execute(self, context):
+		self.cur_mod = self.modifier_name
+		if self.cur_mod != self.old_mod:
+			pass
+		if not self.modifier_name or not self.count:
+			return {'FINISHED'}
+		modifier = context.active_object.modifiers[self.modifier_name]
+		if modifier.type == "ARRAY" and modifier.offset_object:
+			modifier.count = self.count
+			if self.rotation_mode == "AUTO":
+				rot = [0,0,0]
+				rot[int(self.auto_rotation_axis)] = (pi*2) / max(self.count, 1)
+				modifier.offset_object.rotation_euler = rot
+			else:
+				modifier.offset_object.rotation_euler = self.rotation
+		
+		return {'FINISHED'}
+
+
 # Menus
 class ME_MT_AddModifierEmptyMenu(bpy.types.Menu):
 	bl_idname = "ME_MT_add_modifier_empty_menu"
@@ -762,6 +836,7 @@ classes = (
 	ME_OT_AddSimpleDeformEmptyOperator,
 	ME_OT_AddBentArrayEmptyOperator,
 	ME_OT_AddQuickHookEmptyOperator,
+	ME_OT_UpdateRadialArray,
 	ME_MT_AddModifierEmptyMenu,
 	ME_AddonPreferences
 )
